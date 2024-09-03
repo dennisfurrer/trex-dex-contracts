@@ -65,11 +65,9 @@ contract E2E_swap {
     //
     //
 
-    function get_random_zeroForOne_priceLimit(int256 _amountSpecified)
-        internal
-        view
-        returns (uint160 sqrtPriceLimitX96)
-    {
+    function get_random_zeroForOne_priceLimit(
+        int256 _amountSpecified
+    ) internal view returns (uint160 sqrtPriceLimitX96) {
         // help echidna a bit by calculating a valid sqrtPriceLimitX96 using the amount as random seed
         (uint160 currentPrice, , , , , , ) = pool.slot0();
         uint160 minimumPrice = TickMath.MIN_SQRT_RATIO;
@@ -80,11 +78,9 @@ contract E2E_swap {
             );
     }
 
-    function get_random_oneForZero_priceLimit(int256 _amountSpecified)
-        internal
-        view
-        returns (uint160 sqrtPriceLimitX96)
-    {
+    function get_random_oneForZero_priceLimit(
+        int256 _amountSpecified
+    ) internal view returns (uint160 sqrtPriceLimitX96) {
         // help echidna a bit by calculating a valid sqrtPriceLimitX96 using the amount as random seed
         (uint160 currentPrice, , , , , , ) = pool.slot0();
         uint160 maximumPrice = TickMath.MAX_SQRT_RATIO;
@@ -189,11 +185,9 @@ contract E2E_swap {
     //
     //
 
-    function viewRandomInit(uint128 _seed)
-        public
-        view
-        returns (PoolParams memory poolParams, PoolPositions memory poolPositions)
-    {
+    function viewRandomInit(
+        uint128 _seed
+    ) public view returns (PoolParams memory poolParams, PoolPositions memory poolPositions) {
         poolParams = forgePoolParams(_seed);
         poolPositions = forgePoolPositions(_seed, poolParams.tickSpacing, poolParams.tickCount, poolParams.maxTick);
     }
@@ -205,20 +199,8 @@ contract E2E_swap {
     //
 
     function forgePoolParams(uint128 _seed) internal view returns (PoolParams memory poolParams) {
-        //
-        // decide on one of the three fees, and corresponding tickSpacing
-        //
-        if (_seed % 3 == 0) {
-            poolParams.fee = uint24(500);
-            poolParams.tickSpacing = int24(10);
-        } else if (_seed % 3 == 1) {
-            poolParams.fee = uint24(3000);
-            poolParams.tickSpacing = int24(60);
-        } else if (_seed % 3 == 2) {
-            poolParams.fee = uint24(10000);
-            poolParams.tickSpacing = int24(2000);
-        }
-
+        poolParams.fee = uint24(5000);
+        poolParams.tickSpacing = int24(100);
         poolParams.maxTick = (int24(887272) / poolParams.tickSpacing) * poolParams.tickSpacing;
         poolParams.minTick = -poolParams.maxTick;
         poolParams.tickCount = uint24(poolParams.maxTick / poolParams.tickSpacing);
@@ -360,8 +342,11 @@ contract E2E_swap {
         uint160 sqrtPriceLimitX96 = get_random_zeroForOne_priceLimit(_amount);
         // console.log('sqrtPriceLimitX96 = %s', sqrtPriceLimitX96);
 
-        (UniswapSwapper.SwapperStats memory bfre, UniswapSwapper.SwapperStats memory aftr) =
-            swapper.doSwap(true, _amountSpecified, sqrtPriceLimitX96);
+        (UniswapSwapper.SwapperStats memory bfre, UniswapSwapper.SwapperStats memory aftr) = swapper.doSwap(
+            true,
+            _amountSpecified,
+            sqrtPriceLimitX96
+        );
 
         check_swap_invariants(
             bfre.tick,
@@ -394,8 +379,11 @@ contract E2E_swap {
         uint160 sqrtPriceLimitX96 = get_random_oneForZero_priceLimit(_amount);
         // console.log('sqrtPriceLimitX96 = %s', sqrtPriceLimitX96);
 
-        (UniswapSwapper.SwapperStats memory bfre, UniswapSwapper.SwapperStats memory aftr) =
-            swapper.doSwap(false, _amountSpecified, sqrtPriceLimitX96);
+        (UniswapSwapper.SwapperStats memory bfre, UniswapSwapper.SwapperStats memory aftr) = swapper.doSwap(
+            false,
+            _amountSpecified,
+            sqrtPriceLimitX96
+        );
 
         check_swap_invariants(
             bfre.tick,
@@ -428,8 +416,11 @@ contract E2E_swap {
         uint160 sqrtPriceLimitX96 = get_random_zeroForOne_priceLimit(_amount);
         // console.log('sqrtPriceLimitX96 = %s', sqrtPriceLimitX96);
 
-        (UniswapSwapper.SwapperStats memory bfre, UniswapSwapper.SwapperStats memory aftr) =
-            swapper.doSwap(true, _amountSpecified, sqrtPriceLimitX96);
+        (UniswapSwapper.SwapperStats memory bfre, UniswapSwapper.SwapperStats memory aftr) = swapper.doSwap(
+            true,
+            _amountSpecified,
+            sqrtPriceLimitX96
+        );
 
         check_swap_invariants(
             bfre.tick,
@@ -462,8 +453,11 @@ contract E2E_swap {
         uint160 sqrtPriceLimitX96 = get_random_oneForZero_priceLimit(_amount);
         // console.log('sqrtPriceLimitX96 = %s', sqrtPriceLimitX96);
 
-        (UniswapSwapper.SwapperStats memory bfre, UniswapSwapper.SwapperStats memory aftr) =
-            swapper.doSwap(false, _amountSpecified, sqrtPriceLimitX96);
+        (UniswapSwapper.SwapperStats memory bfre, UniswapSwapper.SwapperStats memory aftr) = swapper.doSwap(
+            false,
+            _amountSpecified,
+            sqrtPriceLimitX96
+        );
 
         check_swap_invariants(
             bfre.tick,

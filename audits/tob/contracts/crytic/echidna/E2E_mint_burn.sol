@@ -75,11 +75,9 @@ contract E2E_mint_burn {
         require(burnAmount > 0);
     }
 
-    function _getRandomPositionIdxAndBurnAmount(uint128 _seed)
-        internal
-        view
-        returns (uint128 positionIdx, uint128 burnAmount)
-    {
+    function _getRandomPositionIdxAndBurnAmount(
+        uint128 _seed
+    ) internal view returns (uint128 positionIdx, uint128 burnAmount) {
         positionIdx = _getRandomPositionIdx(_seed, positions.length);
         burnAmount = _getRandomBurnAmount(_seed, positions[positionIdx].amount);
     }
@@ -283,32 +281,22 @@ contract E2E_mint_burn {
         int24 _poolTickSpacing,
         uint24 _poolTickCount,
         int24 _poolMaxTick
-    )
-        public
-        view
-        returns (
-            int24 tickLower,
-            int24 tickUpper,
-            uint128 amount
-        )
-    {
+    ) public view returns (int24 tickLower, int24 tickUpper, uint128 amount) {
         (tickLower, tickUpper) = forgePosition(_seed, _poolTickSpacing, _poolTickCount, _poolMaxTick);
         amount = _seed;
     }
 
-    function viewBurnRandomPositionIdx(uint128 _seed, uint128 _positionsCount)
-        public
-        view
-        returns (uint128 positionIdx)
-    {
+    function viewBurnRandomPositionIdx(
+        uint128 _seed,
+        uint128 _positionsCount
+    ) public view returns (uint128 positionIdx) {
         positionIdx = _getRandomPositionIdx(_seed, _positionsCount);
     }
 
-    function viewBurnRandomPositionBurnAmount(uint128 _seed, uint128 _positionAmount)
-        public
-        view
-        returns (uint128 burnAmount)
-    {
+    function viewBurnRandomPositionBurnAmount(
+        uint128 _seed,
+        uint128 _positionAmount
+    ) public view returns (uint128 burnAmount) {
         burnAmount = _getRandomBurnAmount(_seed, _positionAmount);
     }
 
@@ -319,20 +307,8 @@ contract E2E_mint_burn {
     //
 
     function forgePoolParams(uint128 _seed) internal view returns (PoolParams memory _poolParams) {
-        //
-        // decide on one of the three fees, and corresponding tickSpacing
-        //
-        if (_seed % 3 == 0) {
-            _poolParams.fee = uint24(500);
-            _poolParams.tickSpacing = int24(10);
-        } else if (_seed % 3 == 1) {
-            _poolParams.fee = uint24(3000);
-            _poolParams.tickSpacing = int24(60);
-        } else if (_seed % 3 == 2) {
-            _poolParams.fee = uint24(10000);
-            _poolParams.tickSpacing = int24(2000);
-        }
-
+        _poolParams.fee = uint24(5000);
+        _poolParams.tickSpacing = int24(100);
         _poolParams.maxTick = (int24(887272) / _poolParams.tickSpacing) * _poolParams.tickSpacing;
         _poolParams.minTick = -_poolParams.maxTick;
         _poolParams.tickCount = uint24(_poolParams.maxTick / _poolParams.tickSpacing);
@@ -382,11 +358,18 @@ contract E2E_mint_burn {
 
     function test_mint(uint128 _amount) public {
         if (!inited) _init(_amount);
-        (int24 _tL, int24 _tU) =
-            forgePosition(_amount, poolParams.tickSpacing, poolParams.tickCount, poolParams.maxTick);
+        (int24 _tL, int24 _tU) = forgePosition(
+            _amount,
+            poolParams.tickSpacing,
+            poolParams.tickCount,
+            poolParams.maxTick
+        );
 
-        (UniswapMinter.MinterStats memory bfre, UniswapMinter.MinterStats memory aftr) =
-            minter.doMint(_tL, _tU, _amount);
+        (UniswapMinter.MinterStats memory bfre, UniswapMinter.MinterStats memory aftr) = minter.doMint(
+            _tL,
+            _tU,
+            _amount
+        );
         storeUsedTicks(_tL, _tU);
 
         check_mint_invariants(_tL, _tU, bfre, aftr);

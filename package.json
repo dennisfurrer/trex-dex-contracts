@@ -1,20 +1,14 @@
 {
-  "name": "@uniswap/v3-core",
-  "description": "🦄 Core smart contracts of Uniswap V3",
+  "name": "trex-dex-contracts",
+  "description": "Core DEX smart contracts",
   "license": "BUSL-1.1",
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.0.1",
-  "homepage": "https://uniswap.org",
-  "keywords": [
-    "uniswap",
-    "core",
-    "v3"
-  ],
+  "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Uniswap/uniswap-v3-core"
+    "url": "https://github.com/Tempestas-DeFi/trex-dex-contracts"
   },
   "files": [
     "contracts/interfaces",
