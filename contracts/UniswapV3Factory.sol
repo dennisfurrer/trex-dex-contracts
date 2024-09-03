@@ -23,12 +23,8 @@ contract UniswapV3Factory is IUniswapV3Factory, UniswapV3PoolDeployer, NoDelegat
         owner = msg.sender;
         emit OwnerChanged(address(0), msg.sender);
 
-        feeAmountTickSpacing[500] = 10;
-        emit FeeAmountEnabled(500, 10);
-        feeAmountTickSpacing[3000] = 60;
-        emit FeeAmountEnabled(3000, 60);
-        feeAmountTickSpacing[10000] = 200;
-        emit FeeAmountEnabled(10000, 200);
+        feeAmountTickSpacing[5000] = 100; // T-REX (fee-tier mod)
+        emit FeeAmountEnabled(5000, 100); // T-REX (fee-tier mod)
     }
 
     /// @inheritdoc IUniswapV3Factory
@@ -37,6 +33,7 @@ contract UniswapV3Factory is IUniswapV3Factory, UniswapV3PoolDeployer, NoDelegat
         address tokenB,
         uint24 fee
     ) external override noDelegateCall returns (address pool) {
+        require(msg.sender == owner); // T-REX (limit pool creation mod)
         require(tokenA != tokenB);
         (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         require(token0 != address(0));
