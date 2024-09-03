@@ -18,7 +18,6 @@ contract UniswapV3Factory is IUniswapV3Factory, UniswapV3PoolDeployer, NoDelegat
     mapping(uint24 => int24) public override feeAmountTickSpacing;
     /// @inheritdoc IUniswapV3Factory
     mapping(address => mapping(address => mapping(uint24 => address))) public override getPool;
-    mapping(uint24 => bool) public feeAmountEnabled; // T-REX (fee-tier mod)
 
     constructor() {
         owner = msg.sender;
@@ -34,6 +33,7 @@ contract UniswapV3Factory is IUniswapV3Factory, UniswapV3PoolDeployer, NoDelegat
         address tokenB,
         uint24 fee
     ) external override noDelegateCall returns (address pool) {
+        require(msg.sender == owner); // T-REX (limit pool creation mod)
         require(tokenA != tokenB);
         (address token0, address token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         require(token0 != address(0));
